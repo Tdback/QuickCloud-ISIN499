@@ -9,18 +9,31 @@ resource "aws_vpc" "quickcloud_vpc" {
   enable_dns_support   = true
 
   tags = {
-    Name = "dev_vpc"
+    Name = "quickcloud_vpc"
   }
 }
 
-resource "aws_subnet" "quickcloud_sub_pub" {
+resource "aws_subnet" "quickcloud_public" {
+  count                   = length(var.public_subnet)
   vpc_id                  = aws_vpc.quickcloud_vpc.id
-  cidr_block              = "10.0.1.0/24"
+  cidr_block              = var.public_subnet[count.index]
+  availability_zone       = data.aws_availability_zones.available.names[count.index]
   map_public_ip_on_launch = true
-  availability_zone       = "us-east-2a"
 
   tags = {
-    Name = "dev_sub_pub"
+    Name = "quickcloud_public_${count.index}"
+  }
+}
+
+resource "aws_subnet" "quickcloud_private" {
+  count                   = length(var.private_subnet)
+  vpc_id                  = aws_vpc.quickcloud_vpc.id
+  cidr_block              = var.private_subnet[count.index]
+  availability_zone       = data.aws_availability_zones.available.names[count.index]
+  map_public_ip_on_launch = false
+
+  tags = {
+    Name = "quickcloud_private_${count.index}"
   }
 }
 
@@ -28,7 +41,7 @@ resource "aws_internet_gateway" "quickcloud_gw" {
   vpc_id = aws_vpc.quickcloud_vpc.id
 
   tags = {
-    Name = "dev_gw"
+    Name = "quickcloud_gw"
   }
 }
 
@@ -36,7 +49,7 @@ resource "aws_route_table" "quickcloud_rt" {
   vpc_id = aws_vpc.quickcloud_vpc.id
 
   tags = {
-    Name = "dev_public_rt"
+    Name = "quickcloud_public_rt"
   }
 }
 
@@ -47,7 +60,8 @@ resource "aws_route" "default_route" {
 }
 
 resource "aws_route_table_association" "quickcloud_public_assoc" {
-  subnet_id      = aws_subnet.quickcloud_sub_pub.id
+  count          = length(var.public_subnet)
+  subnet_id      = aws_subnet.quickcloud_public[count.index].id
   route_table_id = aws_route_table.quickcloud_rt.id
 }
 
@@ -76,12 +90,13 @@ resource "aws_key_pair" "test_ssh" {
   public_key = file("~/.ssh/aws_ssh_testing.pub")
 }
 
-resource "aws_instance" "quickcloud_instance_1" {
+resource "aws_instance" "quickcloud_instance" {
+  count                  = length(var.server)
   instance_type          = "t2.micro"
   ami                    = data.aws_ami.server_ami.id
   key_name               = aws_key_pair.test_ssh.id
   vpc_security_group_ids = [aws_security_group.quickcloud_sg.id]
-  subnet_id              = aws_subnet.quickcloud_sub_pub.id
+  subnet_id              = aws_subnet.quickcloud_public[count.index].id
   user_data              = file("./bootstrap.tpl")
 
   root_block_device {
@@ -89,7 +104,7 @@ resource "aws_instance" "quickcloud_instance_1" {
   }
 
   tags = {
-    Name = "dev-node"
+    Name = "quickcloud_node_${count.index}"
   }
 }
 
