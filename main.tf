@@ -60,7 +60,7 @@ resource "aws_security_group" "quickcloud_sg" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["65.49.241.148/32"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -77,11 +77,12 @@ resource "aws_key_pair" "test_ssh" {
 }
 
 resource "aws_instance" "quickcloud_instance_1" {
-  instance_type           = "t2.micro"
-  ami                     = data.aws_ami.server_ami.id
-  key_name                = aws_key_pair.test_ssh.id
-  vpc_security_groups_ids = [aws_security_group.quickcloud_sg.id]
-  subnet_id               = aws_subnet.quickcloud_sub_pub.id
+  instance_type          = "t2.micro"
+  ami                    = data.aws_ami.server_ami.id
+  key_name               = aws_key_pair.test_ssh.id
+  vpc_security_group_ids = [aws_security_group.quickcloud_sg.id]
+  subnet_id              = aws_subnet.quickcloud_sub_pub.id
+  user_data              = file("./bootstrap.tpl")
 
   root_block_device {
     volume_size = 16 # Max number of gigs in free tier
