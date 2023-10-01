@@ -3,8 +3,8 @@ data "aws_ami" "server_ami" {
   owners      = ["098598839212"]
 
   filter {
-      name   = "name"
-      values = ["debian-12-amd64-*"]
+    name   = "name"
+    values = ["debian-12-amd64-*"]
   }
 }
 
