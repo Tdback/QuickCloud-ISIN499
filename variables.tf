@@ -1,29 +1,41 @@
 variable "public_subnet" {
-  type    = list(string)
-  default = []
+  description = "Public subnet CIDRs for the ALB and NAT instances."
+  type        = list(string)
+  default     = []
 }
 
 variable "private_server" {
-  type    = list(string)
-  default = []
+  description = "Private subnets CIDRs for the EC2 instances."
+  type        = list(string)
+  default     = []
 }
 
 variable "private_db" {
-  type    = list(string)
-  default = []
+  description = "Private subnet CIDRs for the SQL databases."
+  type        = list(string)
+  default     = []
 }
 
 variable "server_name" {
-  type    = list(string)
-  default = []
+  description = "Generic names for EC2 instances."
+  type        = list(string)
+  default     = []
 }
 
 variable "private_ips" {
-  type    = list(string)
-  default = []
+  description = "IPs for EC2 instances."
+  type        = list(string)
+  default     = []
 }
 
 variable "eips" {
-  type    = list(string)
-  default = []
+  description = "Elastic IPs for NAT instances."
+  type        = list(string)
+  default     = []
+}
+
+variable "db_password" {
+  description = "RDS root user password"
+  type        = string
+  sensitive   = true
 }
