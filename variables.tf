@@ -3,12 +3,17 @@ variable "public_subnet" {
   default = []
 }
 
-variable "private_subnet" {
+variable "private_server" {
   type    = list(string)
   default = []
 }
 
-variable "server" {
+variable "private_db" {
+  type    = list(string)
+  default = []
+}
+
+variable "server_name" {
   type    = list(string)
   default = []
 }
