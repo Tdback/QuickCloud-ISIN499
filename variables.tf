@@ -17,3 +17,13 @@ variable "server_name" {
   type    = list(string)
   default = []
 }
+
+variable "private_ips" {
+  type    = list(string)
+  default = []
+}
+
+variable "eips" {
+  type    = list(string)
+  default = []
+}
