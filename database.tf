@@ -22,7 +22,7 @@ resource "aws_security_group_rule" "rds_ingress" {
 }
 
 
-resource "aws_db_instance" "default" {
+resource "aws_db_instance" "quickcloud_db" {
   allocated_storage    = 10
   db_name              = "quick_cloud_db"
   engine               = "mysql"
