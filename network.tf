@@ -61,7 +61,7 @@ resource "aws_route_table" "quickcloud_rt" {
   vpc_id = aws_vpc.quickcloud_vpc.id
 
   tags = {
-    Name = "quickcloud_public_rt"
+    Name = "quickcloud_rt_public"
   }
 }
 
@@ -94,6 +94,10 @@ resource "aws_security_group" "quickcloud_alb_sg" {
     to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "quickcloud_alb_sg"
   }
 }
 
@@ -131,6 +135,49 @@ resource "aws_lb_target_group_attachment" "quickcloud_tg_attach" {
   target_group_arn = aws_lb_target_group.quickcloud_tg.arn
   target_id        = aws_instance.quickcloud_instance[each.key].id
   port             = 80
+}
+
+resource "aws_eip" "quickcloud_nat_eip" {
+  count                     = length(var.public_subnet)
+  associate_with_private_ip = var.eips[count.index]
+  depends_on                = [aws_internet_gateway.quickcloud_gw]
+
+  tags = {
+    Name = "quickcloud_nat_eip"
+  }
+}
+
+resource "aws_nat_gateway" "quickcloud_nat_gw" {
+  count         = length(var.public_subnet)
+  allocation_id = aws_eip.quickcloud_nat_eip[count.index].id
+  subnet_id     = aws_subnet.quickcloud_public[count.index].id
+
+  tags = {
+    Name = "quickcloud_nat_gw_${count.index}"
+  }
+}
+
+resource "aws_route_table" "quickcloud_rt_private" {
+  count  = length(var.private_server)
+  vpc_id = aws_vpc.quickcloud_vpc.id
+
+  tags = {
+    Name = "quickcloud_rt_private_${count.index}"
+  }
+
+}
+
+resource "aws_route" "private_route" {
+  count                  = length(var.private_server)
+  route_table_id         = aws_route_table.quickcloud_rt_private[count.index].id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.quickcloud_nat_gw[count.index].id
+}
+
+resource "aws_route_table_association" "quickcloud_private_assoc" {
+  count          = length(var.private_server)
+  subnet_id      = aws_subnet.quickcloud_private_server[count.index].id
+  route_table_id = aws_route_table.quickcloud_rt_private[count.index].id
 }
 
 # vim: ft=terraform : ts=2
