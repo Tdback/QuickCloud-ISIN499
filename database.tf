@@ -31,20 +31,6 @@ resource "aws_db_subnet_group" "quickcloud_db_subnetgroup" {
   }
 }
 
-<<<<<<< HEAD
-resource "aws_security_group_rule" "rds_ingress" {
-  type        = "ingress"
-  from_port   = 3306 # Assuming MySQL port, change as needed
-  to_port     = 3306
-  protocol    = "tcp"
-  cidr_blocks = ["0.0.0.0/0"] # Allow traffic from a specific source IP or range
-
-  security_group_id = aws_security_group.rds_security_group.id
-}
-
-
-=======
->>>>>>> 70ada1f (DB now launches in private subnets in VPC.)
 resource "aws_db_instance" "quickcloud_db" {
   allocated_storage    = 10
   db_name              = "quick_cloud_db"
