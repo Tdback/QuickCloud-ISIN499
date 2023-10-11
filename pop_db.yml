@@ -1,0 +1,5 @@
+- name: "SQL Script Execution"
+  hosts: Database
+  tasks:
+    - win_command: sqlcmd -S quick_cloud_db -i "C:\\abc\\tmp\\quick_cloud_data.sql"
+      register: sqlcmd_out

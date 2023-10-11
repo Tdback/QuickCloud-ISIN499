@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Page</title>
+</head>
+<body>
+    <h1>Search Data</h1>
+    <form action="search.php" method="POST">
+        <label for="table">Select Table:</label>
+        <select name="table" id="table">
+            <?php
+            // Database connection settings
+            require_once('config.php');
+		
+            $host = DB-HOST;
+	    $username = DB_USER;
+	    $password = DB_PASS;
+	    $database = DB_NAME;
+
+			     
+	    // Create a connection to the database
+	    $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+
+	    // Check connection
+	    if ($conn->connect_error) {
+    		die("Connection failed: " . $conn->connect_error);
+	    }
+
+            // Query to retrieve table names
+            $query = "SHOW TABLES";
+            $result = $conn->query($query);
+
+            if ($result) {
+                while ($row = $result->fetch_assoc()) {
+                    $tableName = $row['Tables_in_mydatabase']; // Adjust the database name
+                    echo "<option value='" . htmlspecialchars($tableName) . "'>$tableName</option>";
+                }
+            } else {
+                echo "Error: " . $conn->error;
+            }
+
+            // Close the database connection
+            $conn->close();
+            ?>
+        </select>
+        <br>
+        <label for="search">Search:</label>
+        <input type="text" name="search" id="search" required>
+        <input type="submit" value="Search">
+    </form>
+</body>
+</html>
