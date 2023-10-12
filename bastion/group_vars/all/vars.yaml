@@ -1,0 +1,17 @@
+---
+username: admin
+group: sudo
+
+ansible_directory: "/home/{{ username }}/plays/"
+web_directory: "/var/www/html/"
+
+html_files:
+  - "{{ ansible_directory }}/site/index.html"
+
+php_files:
+  - "{{ ansible_directory }}/site/search.php"
+  - "{{ ansible_directory }}/site/config.php"
+
+sql_file: "{{ ansible_directory }}/sql/table_data.sql"
+
+db_user: peara
