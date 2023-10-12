@@ -1,5 +1,20 @@
-- name: "SQL Script Execution"
-  hosts: Database
+---
+- name: Upload and Populate Database
+  hosts: your_remote_server
+  become: yes  # If sudo privileges are required
+
   tasks:
-    - win_command: sqlcmd -S quick_cloud_db -i "C:\\abc\\tmp\\quick_cloud_data.sql"
-      register: sqlcmd_out
+    - name: Copy SQL script to remote server
+      copy:
+        src: ~/QuickCloud-ISIN499/quick_cloud_data.sql
+        dest: /home
+        mode: 0644  # Adjust permissions as needed
+      # You may need to specify 'owner' and 'group' as well
+
+    - name: Run SQL script
+      command: |
+        mysql -u peara -p'password123' -h localhost quick_cloud_db < /home/quick_cloud_data.sql
+      # Replace 'your_db_user', 'your_db_password', 'your_db_name', and the command if you're using a different database system
+
+    # Additional tasks can be added here, like restarting services or notifying other systems about the update
+
