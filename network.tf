@@ -83,15 +83,15 @@ resource "aws_security_group" "quickcloud_alb_sg" {
   vpc_id      = aws_vpc.quickcloud_vpc.id
 
   ingress {
-    from_port   = 80
-    to_port     = 80
+    from_port   = var.http_port
+    to_port     = var.http_port
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
-    from_port   = 443
-    to_port     = 443
+    from_port   = var.https_port
+    to_port     = var.https_port
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -114,7 +114,7 @@ resource "aws_lb" "quickcloud_alb" {
 
 resource "aws_lb_listener" "quickcloud_listener" {
   load_balancer_arn = aws_lb.quickcloud_alb.arn
-  port              = 80
+  port              = var.http_port
   protocol          = "HTTP"
 
   default_action {
@@ -125,7 +125,7 @@ resource "aws_lb_listener" "quickcloud_listener" {
 
 resource "aws_lb_target_group" "quickcloud_tg" {
   name     = "tf-example-lb-tg"
-  port     = 80
+  port     = var.http_port
   protocol = "HTTP"
   vpc_id   = aws_vpc.quickcloud_vpc.id
 }
@@ -134,7 +134,7 @@ resource "aws_lb_target_group_attachment" "quickcloud_tg_attach" {
   for_each         = { for k, v in var.server_name : k => v }
   target_group_arn = aws_lb_target_group.quickcloud_tg.arn
   target_id        = aws_instance.quickcloud_instance[each.key].id
-  port             = 80
+  port             = var.http_port
 }
 
 resource "aws_eip" "quickcloud_nat_eip" {
@@ -183,71 +183,95 @@ resource "aws_route_table_association" "quickcloud_private_assoc" {
 resource "aws_network_acl" "quickcloud_server_nacls" {
   vpc_id     = aws_vpc.quickcloud_vpc.id
   subnet_ids = [for subnet in aws_subnet.quickcloud_private_server : subnet.id]
+}
 
-  dynamic "ingress" {
-    for_each = var.public_subnet
-    content {
-      protocol   = "tcp"
-      rule_no    = 100
-      action     = "allow"
-      cidr_block = ingress.value
-      from_port  = 80
-      to_port    = 80
-    }
-  }
+resource "aws_network_acl_rule" "quickcloud_server_nacl_ingress_http" {
+  count          = length(var.public_subnet)
+  network_acl_id = aws_network_acl.quickcloud_server_nacls.id
+  rule_number    = sum([100, count.index])
+  egress         = false
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = var.public_subnet[count.index]
+  from_port      = var.http_port
+  to_port        = var.http_port
+}
 
-  dynamic "ingress" {
-    for_each = var.public_subnet
-    content {
-      protocol   = "tcp"
-      rule_no    = 200
-      action     = "allow"
-      cidr_block = ingress.value
-      from_port  = 22
-      to_port    = 22
-    }
-  }
+resource "aws_network_acl_rule" "quickcloud_server_nacl_ingress_ssh" {
+  count          = length(var.public_subnet)
+  network_acl_id = aws_network_acl.quickcloud_server_nacls.id
+  rule_number    = sum([200, count.index])
+  egress         = false
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = var.public_subnet[count.index]
+  from_port      = var.ssh_port
+  to_port        = var.ssh_port
+}
 
-  dynamic "egress" {
-    for_each = var.public_subnet
-    content {
-      protocol   = "-1"
-      rule_no    = 300
-      action     = "allow"
-      cidr_block = egress.value
-      from_port  = 0
-      to_port    = 0
-    }
-  }
+resource "aws_network_acl_rule" "quickcloud_server_nacl_ingress_deny_all" {
+  count          = length(var.public_subnet)
+  network_acl_id = aws_network_acl.quickcloud_server_nacls.id
+  rule_number    = sum([300, count.index])
+  egress         = false
+  protocol       = "-1"
+  rule_action    = "deny"
+  cidr_block     = var.public_subnet[count.index]
+  from_port      = 0
+  to_port        = 0
+}
+
+resource "aws_network_acl_rule" "quickcloud_server_nacl_egress" {
+  count          = length(var.public_subnet)
+  network_acl_id = aws_network_acl.quickcloud_server_nacls.id
+  rule_number    = sum([100, count.index])
+  egress         = true
+  protocol       = "-1"
+  rule_action    = "allow"
+  cidr_block     = var.public_subnet[count.index]
+  from_port      = 0
+  to_port        = 0
 }
 
 resource "aws_network_acl" "quickcloud_db_nacls" {
   vpc_id     = aws_vpc.quickcloud_vpc.id
   subnet_ids = [for subnet in aws_subnet.quickcloud_private_db : subnet.id]
-
-  dynamic "ingress" {
-    for_each = var.private_server
-    content {
-      protocol   = "tcp"
-      rule_no    = 100
-      action     = "allow"
-      cidr_block = ingress.value
-      from_port  = var.db_port
-      to_port    = var.db_port
-    }
-  }
-
-  dynamic "egress" {
-    for_each = var.private_server
-    content {
-      protocol   = "tcp"
-      rule_no    = 200
-      action     = "allow"
-      cidr_block = egress.value
-      from_port  = var.db_port
-      to_port    = var.db_port
-    }
-  }
 }
 
-# vim: ft=terraform : ts=2
+resource "aws_network_acl_rule" "quickcloud_db_nacl_ingress" {
+  count          = length(var.private_server)
+  network_acl_id = aws_network_acl.quickcloud_db_nacls.id
+  rule_number    = sum([100, count.index])
+  egress         = false
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = var.private_server[count.index]
+  from_port      = var.db_port
+  to_port        = var.db_port
+}
+
+resource "aws_network_acl_rule" "quickcloud_db_nacl_ingress_deny_all" {
+  count          = length(var.public_subnet)
+  network_acl_id = aws_network_acl.quickcloud_server_nacls.id
+  rule_number    = sum([200, count.index])
+  egress         = false
+  protocol       = "-1"
+  rule_action    = "deny"
+  cidr_block     = var.public_subnet[count.index]
+  from_port      = 0
+  to_port        = 0
+}
+
+resource "aws_network_acl_rule" "quickcloud_db_nacl_egress" {
+  count          = length(var.private_server)
+  network_acl_id = aws_network_acl.quickcloud_db_nacls.id
+  rule_number    = sum([100, count.index])
+  egress         = true
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = var.private_server[count.index]
+  from_port      = var.db_port
+  to_port        = var.db_port
+}
+
+# vim: ft=terraform :ts=2
