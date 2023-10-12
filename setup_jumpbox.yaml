@@ -1,0 +1,17 @@
+---
+- name: Ping AWS instances
+  hosts: jumpbox
+
+  tasks:
+    - name: Ping instance
+      ansible.builtin.ping:
+      register: host_up
+
+    - name: Copy over web server plays
+      ansible.builtin.copy:
+        src: "{{ bastion_ansible.src }}"
+        dest: "{{ bastion_ansible.dest }}"
+        owner: "{{ username }}"
+        group: "{{ group }}"
+        mode: "{{ mode }}"
+      when: host_up

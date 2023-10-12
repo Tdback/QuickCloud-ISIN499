@@ -1,0 +1,8 @@
+username: admin
+group: sudo
+
+mode: '0644'
+
+bastion_ansible:
+  - src: "../../bastion/"
+  - dest: "/home/{{ username }}/plays/"
