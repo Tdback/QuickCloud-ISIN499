@@ -180,4 +180,74 @@ resource "aws_route_table_association" "quickcloud_private_assoc" {
   route_table_id = aws_route_table.quickcloud_rt_private[count.index].id
 }
 
+resource "aws_network_acl" "quickcloud_server_nacls" {
+  vpc_id     = aws_vpc.quickcloud_vpc.id
+  subnet_ids = [for subnet in aws_subnet.quickcloud_private_server : subnet.id]
+
+  dynamic "ingress" {
+    for_each = var.public_subnet
+    content {
+      protocol   = "tcp"
+      rule_no    = 100
+      action     = "allow"
+      cidr_block = ingress.value
+      from_port  = 80
+      to_port    = 80
+    }
+  }
+
+  dynamic "ingress" {
+    for_each = var.public_subnet
+    content {
+      protocol   = "tcp"
+      rule_no    = 200
+      action     = "allow"
+      cidr_block = ingress.value
+      from_port  = 22
+      to_port    = 22
+    }
+  }
+
+  dynamic "egress" {
+    for_each = var.public_subnet
+    content {
+      protocol   = "-1"
+      rule_no    = 300
+      action     = "allow"
+      cidr_block = egress.value
+      from_port  = 0
+      to_port    = 0
+    }
+  }
+}
+
+resource "aws_network_acl" "quickcloud_db_nacls" {
+  vpc_id     = aws_vpc.quickcloud_vpc.id
+  subnet_ids = [for subnet in aws_subnet.quickcloud_private_db : subnet.id]
+
+  dynamic "ingress" {
+    for_each = var.private_server
+    content {
+      protocol   = "tcp"
+      rule_no    = 100
+      action     = "allow"
+      cidr_block = ingress.value
+      from_port  = var.db_port
+      to_port    = var.db_port
+    }
+  }
+
+  dynamic "egress" {
+    for_each = var.private_server
+    content {
+      protocol   = "tcp"
+      rule_no    = 200
+      action     = "allow"
+      cidr_block = egress.value
+      from_port  = var.db_port
+      to_port    = var.db_port
+    }
+  }
+}
+
 # vim: ft=terraform : ts=2
