@@ -10,3 +10,7 @@ db_engine         = "mysql"
 db_engine_version = "5.7"
 db_instance_class = "db.t3.micro"
 db_port           = 3306
+ssh_port          = 22
+bastion_ssh_port  = 2222
+http_port         = 80
+https_port        = 443

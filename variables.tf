@@ -69,3 +69,23 @@ variable "db_port" {
   description = "Port for database requests/responses."
   type        = number
 }
+
+variable "ssh_port" {
+  description = "Port for ssh communication."
+  type        = number
+}
+
+variable "bastion_ssh_port" {
+  description = "Port for bastion ssh communication."
+  type        = number
+}
+
+variable "http_port" {
+  description = "Port for http requests/responses."
+  type        = number
+}
+
+variable "https_port" {
+  description = "Port for https requests/responses."
+  type        = number
+}
