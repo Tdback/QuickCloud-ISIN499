@@ -39,3 +39,33 @@ variable "db_password" {
   type        = string
   sensitive   = true
 }
+
+variable "type" {
+  description = "Instance type for EC2 instances."
+  type        = string
+}
+
+variable "db_username" {
+  description = "Username for database administrator."
+  type        = string
+}
+
+variable "db_engine" {
+  description = "Engine for RDS instance."
+  type        = string
+}
+
+variable "db_engine_version" {
+  description = "Specified version for RDS engine."
+  type        = string
+}
+
+variable "db_instance_class" {
+  description = "Type of RDS instance."
+  type        = string
+}
+
+variable "db_port" {
+  description = "Port for database requests/responses."
+  type        = number
+}
