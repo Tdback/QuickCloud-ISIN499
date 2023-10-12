@@ -2,16 +2,16 @@
 username: admin
 group: sudo
 
-ansible_directory: "/home/{{ username }}/plays/"
+ansible_base_dir: "../../"
 web_directory: "/var/www/html/"
 
 html_files:
-  - "{{ ansible_directory }}/site/index.html"
+  - "{{ ansible_base_dir }}/site/index.html"
 
 php_files:
-  - "{{ ansible_directory }}/site/search.php"
-  - "{{ ansible_directory }}/site/config.php"
+  - "{{ ansible_base_dir }}/site/search.php"
+  - "{{ ansible_base_dir }}/site/config.php"
 
-sql_file: "{{ ansible_directory }}/sql/table_data.sql"
+sql_file: "{{ ansible_base_dir }}/sql/table_data.sql"
 
 db_user: peara
