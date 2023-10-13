@@ -1,0 +1,45 @@
+---
+- name: Update and upgrade apt packages
+  ansible.builtin.apt:
+    upgrade: yes
+    update_cache: yes
+
+- name: Install essential packages
+  ansible.builtin.package:
+    name: "{{ packages }}"
+    state: latest
+
+- name: Disable SSH password auth
+  ansible.builtin.lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^#Port 22"
+    line: "Port 2222"
+  register: sshd_config
+
+- name: Disable SSH password auth
+  ansible.builtin.lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^#PasswordAuthentication yes"
+    line: "PasswordAuthentication no"
+  register: sshd_config
+
+- name: Disable SSH empty password auth
+  ansible.builtin.lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^#PermitEmptyPasswords no"
+    line: "PermitEmptyPasswords no"
+  register: sshd_config
+
+- name: Disable SSH root login
+  ansible.builtin.lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^#PermitRootLogin prohibit-password"
+    line: "PermitRootLogin prohibit-password"
+  register: sshd_config
+
+- name: Restart SSH daemon
+  ansible.builtin.service:
+    name: sshd
+    state: restarted
+  when: sshd_config.changed
+

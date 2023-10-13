@@ -7,3 +7,6 @@ ssh_mode: '0600'
 bastion_ansible:
   src: "../bastion/"
   dest: "/home/{{ username }}/plays/"
+
+packages:
+  - ansible
