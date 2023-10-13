@@ -200,7 +200,7 @@ resource "aws_network_acl_rule" "quickcloud_server_nacl_ingress_http" {
 resource "aws_network_acl_rule" "quickcloud_server_nacl_ingress_ssh" {
   count          = length(var.public_subnet)
   network_acl_id = aws_network_acl.quickcloud_server_nacls.id
-  rule_number    = sum([200, count.index])
+  rule_number    = sum([110, count.index])
   egress         = false
   protocol       = "tcp"
   rule_action    = "allow"
