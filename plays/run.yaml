@@ -1,0 +1,18 @@
+---
+- name: Ping AWS instances
+  hosts: jumpbox
+
+  tasks:
+    - name: Ping instance
+      ansible.builtin.ping:
+      register: host_up
+
+    - name: Copy over bastion host configuration
+      ansible.builtin.import_tasks: ./tasks/copy.yaml
+      when: host_up
+
+    - name: Configure bastion host
+      become: yes
+      ansible.builtin.import_tasks: ./tasks/setup.yaml
+      when: host_up
+

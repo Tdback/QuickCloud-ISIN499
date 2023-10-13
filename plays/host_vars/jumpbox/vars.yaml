@@ -1,0 +1,12 @@
+username: admin
+group: sudo
+
+mode: '0644'
+ssh_mode: '0600'
+
+bastion_ansible:
+  src: "../bastion/"
+  dest: "/home/{{ username }}/plays/"
+
+packages:
+  - ansible
