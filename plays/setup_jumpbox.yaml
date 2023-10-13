@@ -14,4 +14,15 @@
         owner: "{{ username }}"
         group: "{{ group }}"
         mode: "{{ mode }}"
+        decrypt: no
       when: host_up
+
+    - name: Copy over SSH keys
+      ansible.builtin.copy:
+        src: "{{ ssh_key_file }}"
+        dest: "/home/{{ username }}/.ssh"
+        owner: "{{ username }}"
+        group: "{{ group }}"
+        mode: "{{ ssh_mode }}"
+      when: host_up
+
