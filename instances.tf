@@ -4,7 +4,7 @@ resource "aws_security_group" "quickcloud_ssh_sg" {
   vpc_id      = aws_vpc.quickcloud_vpc.id
 
   ingress {
-    from_port   = var.bastion_ssh_port
+    from_port   = var.ssh_port
     to_port     = var.bastion_ssh_port
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
@@ -33,7 +33,6 @@ resource "aws_instance" "jump_box" {
   key_name               = aws_key_pair.test_ssh.id
   vpc_security_group_ids = [aws_security_group.quickcloud_ssh_sg.id]
   subnet_id              = aws_subnet.quickcloud_public[0].id
-  user_data              = file("./templates/jumpbox.tpl")
 
   root_block_device {
     volume_size = 8 # This box won't hold much data
@@ -83,7 +82,6 @@ resource "aws_instance" "quickcloud_instance" {
   vpc_security_group_ids = [aws_security_group.quickcloud_sg.id]
   subnet_id              = aws_subnet.quickcloud_private_server[count.index].id
   private_ip             = var.private_ips[count.index]
-  user_data              = file("./templates/bootstrap.tpl")
 
   root_block_device {
     volume_size = 16 # Max number of gigs in free tier
