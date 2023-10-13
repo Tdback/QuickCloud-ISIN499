@@ -2,7 +2,7 @@
 username: admin
 group: sudo
 
-ansible_base_dir: "../../"
+ansible_base_dir: "/home/{{ username }}/plays/"
 web_directory: "/var/www/html/"
 
 html_files:
