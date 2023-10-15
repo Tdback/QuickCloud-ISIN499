@@ -12,7 +12,6 @@
 # Make sure to call this script from the plays directory or the quickcloud root
 # directory, or else pathing won't work right.
 current_dir=$(basename "$(pwd)")
-echo "$current_dir"
 if [ "$current_dir" != "QuickCloud" ] && [ "$current_dir" != "plays" ]
 then
     echo "Error: Please call the setup script from the right directory;"
