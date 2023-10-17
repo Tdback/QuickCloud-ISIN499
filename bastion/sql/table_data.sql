@@ -1,39 +1,26 @@
-Use quick_cloud_db
-
-Create Table Donor (
-DonorID  int NOT NULL IDENTITY(1,1) PRIMARY KEY, 
-FName nvarchar(30),
-LName nvarchar(30),
-City nvarchar(40),
-State nvarchar(40));
+CREATE TABLE Donor (
+DonorID  iNT AUTO_INCREMENT PRIMARY KEY, 
+FName varchar(30),
+LName varchar(30),
+City varchar(40),
+State varchar(40));
 
 Create Table Recepiant (
-RecepiantID int IDENTITY(1,1) PRIMARY KEY,
-FName nvarchar(30),
-LName nvarchar(30),
-City nvarchar(40),
-State nvarchar(40));
+RecepiantID int AUTO_INCREMENT PRIMARY KEY,
+FName varchar(30),
+LName varchar(30),
+City varchar(40),
+State varchar(40));
 
 Create Table Donations(
-DonationID int NOT NULL IDENTITY(1,1) Primary Key,
+DonationID int AUTO_INCREMENT Primary Key,
 DAmount float,
 PayType varchar(50));
 
 Create Table Categories(
-CategoryID int NOT NULL IDENTITY(1,1) Primary Key,
+CategoryID int NOT NULL AUTO_INCREMENT Primary Key,
 CName varchar(50),
-CDesc varchar(Max));
-
-Create Table DonorDonations (
-DonorID  int NOT NULL FOREIGN KEY REFERENCES Donor(DonorID), 
-DonationID int NOT NULL FOREIGN KEY REFERENCES Donations(DonationID));
-
-
-
-Create Table DonationCategories(
-DonationID int NOT NULL Foreign KEY REFERENCES Donations(DonationID),
-CategoryID  int NOT NULL Foreign KEY REFERENCES Categories(CategoryID));
-
+CDesc varchar(200));
 
 
 Insert Into Donor (FName, LName, City, State)
@@ -101,33 +88,3 @@ Values
 		('Staff','Bonuses given to staff and other members of faculty'),
 		('Medical','Improved medical services');
 
-Insert Into DonorDonations (DonorID, DonationID)
-Values
-		(1,6),
-		(2,5),
-		(4,9),
-		(3,4),
-		(6,12),
-		(17,15),
-		(14,13),
-		(19,11),
-		(20,10),
-		(14,13),
-		(21,13),
-		(1,3),
-		(5,14),
-		(1,3),
-		(7,2),
-		(7,7);
-
-Insert Into DonationCategories (DonationID, CategoryID)
-Values
-		(3,6),
-		(10,3),
-		(4,2),
-		(1,5),
-		(1,2),
-		(2,6),
-		(7,7),
-		(9,8),
-		(2,8);
