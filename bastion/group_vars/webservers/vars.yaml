@@ -1,6 +1,8 @@
 ---
-username: admin
-group: sudo
+username: ec2-user
+group: users
+
+bastion_username: ubuntu
 
 public_subnets:
   - 10.0.1.0/24
@@ -24,4 +26,5 @@ db_user: admin
 
 packages:
   - apache2
+  - mariadb
   - php
