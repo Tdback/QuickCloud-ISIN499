@@ -1,8 +1,0 @@
----
-- name: Execute SQL script
-  ansible.builtin.shell:
-    cmd: >
-      "mysql -u {{ db_user | ansible.builtin.quote }} -p {{ db_password | ansible.builtin.quote }}
-      -h localhost quick_cloud_db < {{ sql_file | ansible.builtin.quote }}"
-  tags: sql
-
