@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Donation Search Page</title>
+</head>
+<body>
+    <h1>Search Donor Data</h1>
+    <form action="search.php" method="POST">
+        <label for="table">Select Table:</label>
+        <select name="table" id="table">
+           
+            <?php include('config.php'); ?>
+            <?php
+            // Create a connection to the database
+            $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+
+            // Check connection
+            if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error);
+            }
+
+            // Query to retrieve table names
+            $query = "SHOW TABLES";
+            $result = $conn->query($query);
+
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $tableName = $row['Tables_in_mydatabase']; // Adjust the database name
+                    echo "<option value='$tableName'>$tableName</option>";
+                }
+            }
+
+            // Close the database connection
+            $conn->close();
+            ?>
+        </select>
+        <br>
+        <label for="search">Search:</label>
+        <input type="text" name="search" id="search" required>
+        <input type="submit" value="Search">
+    </form>
+</body>
+</html>
+
