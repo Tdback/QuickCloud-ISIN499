@@ -4,12 +4,10 @@
     src: "{{ item }}"
     dest: "{{ web_directory }}"
   loop: "{{ html_files }}"
-  tags: webserver
 
 - name: Copy PHP files to the webserver
   ansible.builtin.copy:
     src: "{{ item }}"
     dest: "{{ web_directory }}"
   loop: "{{ php_files }}"
-  tags: webserver
 
