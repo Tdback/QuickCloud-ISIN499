@@ -8,12 +8,15 @@ public_subnets:
 
 ansible_base_dir: "/home/{{ username }}/plays/"
 web_directory: "/var/www/html/"
+web_config_directory: "/var/www/inc/"
 
 html_files:
   - "{{ ansible_base_dir }}/site/index.html"
+
 php_files:
   - "{{ ansible_base_dir }}/site/search.php"
-  - "{{ ansible_base_dir }}/site/config.php"
+
+db_info: "{{ ansible_base_dir }}/site/dbinfo.inc"
 
 sql_file: "{{ ansible_base_dir }}/sql/table_data.sql"
 
