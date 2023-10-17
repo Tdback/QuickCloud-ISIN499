@@ -4,16 +4,23 @@
     upgrade: yes
     update_cache: yes
 
-- name: Install essential packages
+- name: Install required packages
   ansible.builtin.package:
-    name: "{{ packages }}"
+    name: "{{ item }}"
     state: latest
+  loop: "{{ packages }}"
 
-- name: Set SSH port to '2222'
+- name: Enable apache2 service
+  ansible.builtin.systemd:
+    name: apache2
+    enabled: true
+    state: started
+
+- name: Set SSH port to '22'
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
     regexp: "^#Port 22"
-    line: "Port 2222"
+    line: "Port 22"
   register: sshd_config
 
 - name: Disable SSH password auth

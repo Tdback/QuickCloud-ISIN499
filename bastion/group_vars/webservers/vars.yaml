@@ -2,16 +2,23 @@
 username: admin
 group: sudo
 
+public_subnets:
+  - 10.0.1.0/24
+  - 10.0.2.0/24
+
 ansible_base_dir: "/home/{{ username }}/plays/"
 web_directory: "/var/www/html/"
 
 html_files:
   - "{{ ansible_base_dir }}/site/index.html"
-
 php_files:
   - "{{ ansible_base_dir }}/site/search.php"
   - "{{ ansible_base_dir }}/site/config.php"
 
 sql_file: "{{ ansible_base_dir }}/sql/table_data.sql"
 
-db_user: peara
+db_user: admin
+
+packages:
+  - apache2
+  - php
