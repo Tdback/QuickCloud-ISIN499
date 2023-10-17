@@ -44,8 +44,8 @@ resource "aws_instance" "jump_box" {
 }
 
 resource "aws_security_group" "quickcloud_sg" {
-  name        = "Everything"
-  description = "Enabling all access to the cloud boxes (temporary)"
+  name        = "Quickcloud Webserver SG"
+  description = "Enabling access to the web boxes"
   vpc_id      = aws_vpc.quickcloud_vpc.id
 
   ingress {
@@ -70,7 +70,7 @@ resource "aws_security_group" "quickcloud_sg" {
   }
 
   tags = {
-    Name = "Everything_sg"
+    Name = "quickcloud_webserver_sg"
   }
 }
 
