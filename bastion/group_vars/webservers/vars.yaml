@@ -7,7 +7,6 @@ web_directory: "/var/www/html/"
 
 html_files:
   - "{{ ansible_base_dir }}/site/index.html"
-  - "{{ ansible_base_dir }}/site/search.html"
 php_files:
   - "{{ ansible_base_dir }}/site/search.php"
   - "{{ ansible_base_dir }}/site/config.php"
