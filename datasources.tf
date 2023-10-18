@@ -22,4 +22,4 @@ data "aws_ami" "bastion_ami" {
   }
 }
 
-# vim: ft=terraform : ts=2
+# vim: ft=terraform :ts=2

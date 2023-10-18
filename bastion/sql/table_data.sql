@@ -1,3 +1,5 @@
+use quick_cloud_db
+
 CREATE TABLE Donor (
 DonorID  iNT AUTO_INCREMENT PRIMARY KEY, 
 FName varchar(30),

@@ -22,15 +22,15 @@ resource "aws_security_group" "quickcloud_ssh_sg" {
   }
 }
 
-resource "aws_key_pair" "test_ssh" {
-  key_name   = "aws_ssh_testing"
-  public_key = file("~/.ssh/aws_ssh_testing.pub")
+resource "aws_key_pair" "ssh_bastion" {
+  key_name   = "aws_ssh_access"
+  public_key = file("~/.ssh/aws_ssh_access.pub")
 }
 
 resource "aws_instance" "jump_box" {
   instance_type          = var.type
   ami                    = data.aws_ami.bastion_ami.id
-  key_name               = aws_key_pair.test_ssh.id
+  key_name               = aws_key_pair.ssh_bastion.id
   vpc_security_group_ids = [aws_security_group.quickcloud_ssh_sg.id]
   subnet_id              = aws_subnet.quickcloud_public[0].id
 
@@ -78,7 +78,7 @@ resource "aws_instance" "quickcloud_instance" {
   count                  = length(var.server_name)
   instance_type          = var.type
   ami                    = data.aws_ami.server_ami.id
-  key_name               = aws_key_pair.test_ssh.id
+  key_name               = aws_key_pair.ssh_bastion.id
   vpc_security_group_ids = [aws_security_group.quickcloud_sg.id]
   subnet_id              = aws_subnet.quickcloud_private_server[count.index].id
   private_ip             = var.private_ips[count.index]
