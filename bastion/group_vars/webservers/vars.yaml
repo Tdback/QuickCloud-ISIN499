@@ -8,9 +8,10 @@ public_subnets:
   - 10.0.1.0/24
   - 10.0.2.0/24
 
-ansible_base_dir: "/home/{{ username }}/plays/"
-web_directory: "/var/www/html/"
-web_config_directory: "/var/www/inc/"
+ansible_base_dir: "/home/{{ bastion_username }}/plays"
+web_root: "/var/www"
+web_directory: "{{ web_root }}/html/"
+web_config_directory: "{{ web_root }}/inc/"
 
 html_files:
   - "{{ ansible_base_dir }}/site/index.html"
