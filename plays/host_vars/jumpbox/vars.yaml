@@ -1,4 +1,4 @@
-username: admin
+username: ubuntu
 group: sudo
 
 mode: '0644'
@@ -10,3 +10,5 @@ bastion_ansible:
 
 packages:
   - ansible
+  - gnupg
+  - mariadb-server
