@@ -1,18 +1,8 @@
 ---
 - name: Start apache service
   ansible.builtin.systemd:
-    name: apache
+    name: apache2
     state: started
-
-- name: Ensure apache group exists
-  ansible.builtin.group:
-    name: apache
-    state: present
-
-- name: Add ec2-user to apache group
-  ansible.builtin.user:
-    name: "{{ username }}"
-    group: apache
 
 - name: "Change ownership of {{ web_root }} to apache group"
   ansible.builtin.file:
@@ -20,7 +10,7 @@
     state: directory
     recurse: yes
     owner: "{{ username }}"
-    group: apache
+    group: "{{ group }}"
 
 - name: Ensure directories are 0755
   ansible.builtin.shell:

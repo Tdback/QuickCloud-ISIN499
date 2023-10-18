@@ -4,11 +4,11 @@ data "aws_availability_zones" "available" {
 
 data "aws_ami" "server_ami" {
   most_recent = true
-  owners      = ["013907871322"]
+  owners      = ["098598839212"]
 
   filter {
     name   = "name"
-    values = ["suse-sles-15-sp5-v*-hvm-ssd-x86_64"]
+    values = ["debian-12-amd64-*"]
   }
 }
 

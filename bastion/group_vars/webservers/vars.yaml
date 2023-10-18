@@ -1,6 +1,6 @@
 ---
-username: ec2-user
-group: users
+username: admin
+group: sudo
 
 bastion_username: ubuntu
 
@@ -27,5 +27,5 @@ db_user: admin
 
 packages:
   - apache2
-  - mariadb
+  - mariadb-server
   - php

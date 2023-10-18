@@ -1,8 +1,8 @@
 ---
 - name: Update and upgrade all packages
-  community.general.zypper:
-    name: '*'
-    state: latest
+  ansible.builtin.apt:
+    upgrade: yes
+    update_cache: yes
 
 - name: Install packages
   ansible.builtin.package:
