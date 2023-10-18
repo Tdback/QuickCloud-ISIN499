@@ -29,7 +29,7 @@ resource "aws_key_pair" "test_ssh" {
 
 resource "aws_instance" "jump_box" {
   instance_type          = var.type
-  ami                    = data.aws_ami.server_ami.id
+  ami                    = data.aws_ami.bastion_ami.id
   key_name               = aws_key_pair.test_ssh.id
   vpc_security_group_ids = [aws_security_group.quickcloud_ssh_sg.id]
   subnet_id              = aws_subnet.quickcloud_public[0].id

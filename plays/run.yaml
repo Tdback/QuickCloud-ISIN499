@@ -12,8 +12,3 @@
       ansible.builtin.import_tasks: ./tasks/setup.yaml
       tags: setup
 
-    - name: Setup database
-      become: yes
-      ansible.builtin.import_tasks: ./tasks/pop_db.yaml
-      tags: database
-

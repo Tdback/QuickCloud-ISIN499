@@ -1,0 +1,35 @@
+---
+- name: Start apache service
+  ansible.builtin.systemd:
+    name: apache
+    state: started
+
+- name: Ensure apache group exists
+  ansible.builtin.group:
+    name: apache
+    state: present
+
+- name: Add ec2-user to apache group
+  ansible.builtin.user:
+    name: "{{ username }}"
+    group: apache
+
+- name: "Change ownership of {{ web_root }} to apache group"
+  ansible.builtin.file:
+    path: "{{ web_root }}"
+    state: directory
+    recurse: yes
+    owner: "{{ username }}"
+    group: apache
+
+- name: Ensure directories are 0755
+  ansible.builtin.shell:
+    cmd: find {{ web_root }} -type d -exec chmod 0755 {} \;
+  register: chmod_result
+  changed_when: "chmod_result.stdout != \"\""
+
+- name: Ensure files are 0644
+  ansible.builtin.shell:
+    cmd: find {{ web_root }} -type f -exec chmod 0644 {} \;
+  register: chmod_result
+  changed_when: "chmod_result.stdout != \"\""

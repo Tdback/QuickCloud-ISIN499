@@ -1,14 +1,18 @@
 ---
 - name: Ping the systems
+  become: yes
   hosts: webservers
 
   tasks:
     - name: Configure system
-      become: yes
       ansible.builtin.import_tasks: ./tasks/setup.yaml
       tags: setup
 
-    - name: Upload site data to /var/www/html
+    - name: Configure apache
+      ansible.builtin.import_tasks: ./tasks/apache.yaml
+      tags: apache
+
+    - name: Upload site data to "{{ web_root }}"
       ansible.builtin.import_tasks: ./tasks/html_upload.yaml
       tags: upload
 

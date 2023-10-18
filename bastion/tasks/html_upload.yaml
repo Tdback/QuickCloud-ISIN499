@@ -11,3 +11,8 @@
     dest: "{{ web_directory }}"
   loop: "{{ php_files }}"
 
+- name: Copy PHP configuration to the webserver
+  ansible.builtin.copy:
+    src: "{{ db_info }}"
+    dest: "{{ web_config_directory }}"
+

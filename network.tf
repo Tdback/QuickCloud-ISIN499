@@ -209,45 +209,4 @@ resource "aws_route_table_association" "quickcloud_private_assoc" {
   route_table_id = aws_route_table.quickcloud_rt_private[count.index].id
 }
 
-resource "aws_network_acl" "quickcloud_db_nacls" {
-  vpc_id     = aws_vpc.quickcloud_vpc.id
-  subnet_ids = [for subnet in aws_subnet.quickcloud_private_db : subnet.id]
-}
-
-resource "aws_network_acl_rule" "quickcloud_db_nacl_ingress" {
-  count          = length(var.private_server)
-  network_acl_id = aws_network_acl.quickcloud_db_nacls.id
-  rule_number    = sum([100, count.index])
-  egress         = false
-  protocol       = "tcp"
-  rule_action    = "allow"
-  cidr_block     = var.private_server[count.index]
-  from_port      = var.db_port
-  to_port        = var.db_port
-}
-
-resource "aws_network_acl_rule" "quickcloud_db_nacl_ingress_deny_all" {
-  count          = length(var.public_subnet)
-  network_acl_id = aws_network_acl.quickcloud_db_nacls.id
-  rule_number    = sum([200, count.index])
-  egress         = false
-  protocol       = "-1"
-  rule_action    = "deny"
-  cidr_block     = var.public_subnet[count.index]
-  from_port      = 0
-  to_port        = 0
-}
-
-resource "aws_network_acl_rule" "quickcloud_db_nacl_egress" {
-  count          = length(var.private_server)
-  network_acl_id = aws_network_acl.quickcloud_db_nacls.id
-  rule_number    = sum([100, count.index])
-  egress         = true
-  protocol       = "tcp"
-  rule_action    = "allow"
-  cidr_block     = var.private_server[count.index]
-  from_port      = var.db_port
-  to_port        = var.db_port
-}
-
 # vim: ft=terraform :ts=2

@@ -8,4 +8,9 @@ output "alb_domain_name" {
   description = "Domain name of the load balancer."
 }
 
-# vim: ft=terraform : ts=2
+output "rds_endpoint" {
+  value       = aws_db_instance.quickcloud_db.endpoint
+  description = "Endpoint of RDS database."
+}
+
+# vim: ft=terraform :ts=2
