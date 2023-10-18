@@ -1,5 +1,5 @@
 ---
-- name: Ping AWS instances
+- name: Configure AWS instances
   hosts: jumpbox
 
   tasks:
