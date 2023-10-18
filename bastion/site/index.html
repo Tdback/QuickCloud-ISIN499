@@ -20,13 +20,13 @@
             }
 
             // Query to retrieve table names
-            $query = "SHOW TABLES";
+            $query = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES";
             $result = $conn->query($query);
 
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
-                    $tableName = $row['Tables_in_mydatabase']; // Adjust the database name
-                    echo "<option value='$tableName'>$tableName</option>";
+                    $tableName = array_search('donor', $row); // Adjust the database name
+                    echo "<'$tableName'>$tableName>";
                 }
             }
 
@@ -41,4 +41,3 @@
     </form>
 </body>
 </html>
-

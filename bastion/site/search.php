@@ -1,5 +1,5 @@
 <?php
-require_once('../inc/dbinfo.inc');
+require_once('config.php');
 
 // Check if the form was submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -15,24 +15,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         die("Connection failed: " . $conn->connect_error);
     }
 
-    // Validate and sanitize user input
+    // Validate and sanitize user input 
     $tableName = mysqli_real_escape_string($conn, $tableName);
     $searchTerm = mysqli_real_escape_string($conn, $searchTerm);
 
-    // Build and execute your SQL query
-    $sql = "SELECT * FROM $tableName WHERE column_name LIKE '%$searchTerm%'";
+    // Build and execute your SQL query 
+    $sql = "SELECT * FROM donor WHERE FName LIKE '%$searchTerm%'";
     $result = $conn->query($sql);
 
     if ($result) {
-        // Display the search results
+        // Display the search results 
         echo "<h2>Search Results</h2>";
         while ($row = $result->fetch_assoc()) {
             // Output your search results here
-            echo "Result: " . $row['column_name'] . "<br>";
+            echo "First Name: " . $row['FName'] . "<br>";
+	    echo "Last Name: " . $row['LName'] . "<br>";
+	    echo "City: " . $row['City'] . "<br>";
+	    echo "State: " . $row['State'] . "<br>";
+	   
         }
-    } else {
-        echo "Error: " . $conn->error;
-    }
+    } 
 
     // Close the database connection
     $conn->close();
