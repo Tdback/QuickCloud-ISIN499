@@ -32,16 +32,18 @@ resource "aws_db_subnet_group" "quickcloud_db_subnetgroup" {
 }
 
 resource "aws_db_instance" "quickcloud_db" {
-  allocated_storage    = 10
   db_name              = "quick_cloud_db"
   engine               = var.db_engine
   engine_version       = var.db_engine_version
   instance_class       = var.db_instance_class
   username             = var.db_username
   password             = var.db_password
-  parameter_group_name = "default.mysql5.7"
+  parameter_group_name = "default.mariadb10.5"
+  db_subnet_group_name = aws_db_subnet_group.quickcloud_db_subnetgroup.name
   skip_final_snapshot  = true
   multi_az             = true
+  allocated_storage    = 50
+  max_allocated_storage = 100
 
   tags = {
     Name = "quickcloud_db"
