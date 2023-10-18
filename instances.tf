@@ -22,9 +22,9 @@ resource "aws_security_group" "quickcloud_ssh_sg" {
   }
 }
 
-resource "aws_key_pair" "test_ssh" {
-  key_name   = "aws_ssh_testing"
-  public_key = file("~/.ssh/aws_ssh_testing.pub")
+resource "aws_key_pair" "ssh_bastion" {
+  key_name   = "aws_ssh_access"
+  public_key = file("~/.ssh/aws_ssh_access.pub")
 }
 
 resource "aws_instance" "jump_box" {
